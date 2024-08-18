@@ -1,7 +1,7 @@
 /*
 	Práctica 1 Dibujo de primitivas
 	Cynthia Berenice Domínguez Reyes
-	Fecha de entrega: 
+	Fecha de entrega: 18 / agosto / 2024 
 
 */
 
@@ -31,7 +31,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Dibujo de Primitivas en 2D", NULL, NULL);
+	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Dibujo de Primitivas en 2D Perrito :D", NULL, NULL);
 	glfwSetFramebufferSizeCallback(window, resize);
 	
 	//Verificaci�n de errores de creacion  ventana
@@ -87,12 +87,22 @@ int main() {
 	 0.75f, -0.24f, 0.0f,	0.545f, 0.353f, 0.149f,	//K 14
 	 0.95f, 0.43f, 0.0f,	0.545f, 0.353f, 0.149f,	//L 15
 	 
-	 //Ojos perrito
-	-0.30f, 0.49f, 0.0f,	1.0f, 1.0f, 1.0f, // C 16
-	-0.25f, 0.49f, 0.0f,	1.0f, 1.0f, 1.0f, // D 17
-	-0.30f, 0.34f, 0.0f,	1.0f, 1.0f, 1.0f, // E 18 
-	-0.25f, 0.34f, 0.0f,	1.0f, 1.0f, 1.0f, // F 19
+	 //Ojo izq perrito
+	-0.30f, 0.49f, 0.0f,	0.0f, 0.0f, 0.0f, // C 16
+	-0.25f, 0.49f, 0.0f,	0.0f, 0.0f, 0.0f, // D 17
+	-0.30f, 0.34f, 0.0f,	0.0f, 0.0f, 0.0f, // E 18 
+	-0.25f, 0.34f, 0.0f,	0.0f, 0.0f, 0.0f, // F 19
 	
+	//Ojo der perrito 
+	0.30f, 0.49f, 0.0f,	0.0f, 0.0f, 0.0f, // G 20
+	0.25f, 0.49f, 0.0f,	0.0f, 0.0f, 0.0f, // H 21
+	0.30f, 0.34f, 0.0f,	0.0f, 0.0f, 0.0f, // I 22 
+	0.25f, 0.34f, 0.0f,	0.0f, 0.0f, 0.0f, // J 23
+
+	//Nariz perrito 
+	0.0f, 0.0f, 0.0f,	 0.0f, 0.0f, 0.0f, //A 24
+	0.16f, -0.12f, 0.0f, 0.0f, 0.0f, 0.0f, //B 25
+	-0.15f, -0.14f, 0.0f, 0.0f, 0.0f, 0.0f, //C 26
 
 
 	};
@@ -109,6 +119,16 @@ int main() {
 		11, 14, 15, //HKL
 		8, 9, 12, //EFI
 
+		//Ojo izq perrito
+		16, 17, 18, //CDE
+		17, 18, 19, //EDF
+
+		//Ojo der perrito
+		20, 21, 22,
+		21, 22, 23,
+
+		//nariz perrito
+		24, 25, 26,
 	};
 
 
@@ -169,10 +189,14 @@ int main() {
         
        //glDrawArrays(GL_TRIANGLES,4, 3); //desde donde empieza y cuantos se necesitan 
 
-        glDrawElements(GL_TRIANGLES, 27,GL_UNSIGNED_INT,0);
+        glDrawElements(GL_TRIANGLES, 42,GL_UNSIGNED_INT,0);
 
 		//Ojos
-		glDrawArrays(GL_POLYGON, 16, 4);
+		//glDrawElements(GL_TRIANGLES, , GL_UNSIGNED_INT, 0);
+
+
+		//glDrawArrays(GL_POLYGON, 16, 4);
+		//glDrawArrays(GL_POLYGON, 20, 4);
 
 
 
