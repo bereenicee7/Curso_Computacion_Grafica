@@ -2,7 +2,7 @@
 /*
 	Práctica 2 Transformaciones
 	Nombre: Domínguez Reyes Cynthia Berenice
-	Fecha de entrega: 
+	Fecha de entrega: 22 de agosto de 2024
 */
 
 
