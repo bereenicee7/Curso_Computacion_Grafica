@@ -1,3 +1,10 @@
+   /*
+            Práctica 5: Carga de Modelos
+            Nombre: Domínguez Reyes Cynthia Berenice
+            Fecha de entrega: 13 de agosto de 2024 
+   
+   */
+
 // Std. Includes
 #include <string>
 
@@ -17,6 +24,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+//-------------- Nuevas Librerías
 // Other Libs
 #include "SOIL2/SOIL2.h"
 #include "stb_image.h"
@@ -30,7 +38,7 @@ void KeyCallback( GLFWwindow *window, int key, int scancode, int action, int mod
 void MouseCallback( GLFWwindow *window, double xPos, double yPos );
 void DoMovement( );
 
-
+//---------Camera Sintética ------------ 
 // Camera
 Camera camera( glm::vec3( 0.0f, 0.0f, 3.0f ) );
 bool keys[1024];
@@ -54,7 +62,7 @@ int main( )
     glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Carga de modelos y camara sintetica", nullptr, nullptr );
+    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Carga de modelos y camara sintetica, Cynthia D. :D", nullptr, nullptr );
     
     if ( nullptr == window )
     {
@@ -94,6 +102,16 @@ int main( )
     Shader shader( "Shader/modelLoading.vs", "Shader/modelLoading.frag" );
     
     // Load models
+    
+
+   // --------------Carga de modelos 
+   Model dog((char*)"Models/RedDog.obj");
+   Model shiba((char*)"Models/shiba/Shiba1.obj");
+   Model parque((char*)"Models/parque/parque.obj");
+
+
+
+
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
   
@@ -124,6 +142,26 @@ int main( )
         glm::mat4 model(1);
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         
+        //----Dibujamos el modelo 
+       //dog.Draw(shader);
+       
+        model = glm::translate(model, glm::vec3(6.0f, 2.5f, 0.0f));
+        model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        dog.Draw(shader); 
+
+        //------------- Modelo ejercicio ------------ 
+        model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        shiba.Draw(shader);
+
+        //------------------ Modelos parque
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        parque.Draw(shader);
+       
 
         // Swap the buffers
         glfwSwapBuffers( window );
