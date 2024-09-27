@@ -2,7 +2,7 @@
 /*
 		Práctica 6: Texturizado
 		Nombre: Domínguez Reyes Cynthia Berenice
-		Fecha de entrega: 
+		Fecha de entrega: 27 de septiembre de 2024
 
 */
 
