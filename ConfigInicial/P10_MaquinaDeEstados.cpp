@@ -1,3 +1,12 @@
+
+/*
+	Práctica 10: Máquina de Estados
+	Nombre: Domínguez Reyes Cynthia Berenice 
+	Fecha de entrega: 25 - octubre - 2024 
+	
+*/
+
+
 #include <iostream>
 #include <cmath>
 
@@ -103,15 +112,35 @@ glm::vec3 Light1 = glm::vec3(0);
 float rotBall = 0.0f;
 bool AnimBall = false;
 bool AnimDog = false;
-float rotDog = 0.0f;
+
 int dogAnim = 0;
 float FLegs = 0.0f;
 float RLegs = 0.0f;
 float head = 0.0f;
 float tail = 0.0f;
-glm::vec3 dogPos (0.0f,0.0f,0.0f);
+glm::vec3 dogPos (0.0f,0.0f,0.0f); //controla las posiciones 
 float dogRot = 0.0f;
 bool step = false;
+
+//agregamos variables extra para realizar el recorrido del perrito 
+
+bool caminaDel = false; 
+bool caminaDer = false;
+bool caminaAtr = false;
+bool inicioEs = false; 
+float angRot = 0.0f; 
+float rotDog = 0.0f;
+int edoActual = 0.0f; 
+
+//Estados del perrito 
+enum DogState {
+	adelante,
+	derecha,
+	atras,
+	inicio
+};
+
+
 
 
 
@@ -131,7 +160,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Animacion maquina de estados", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Animacion maquina de estados Cynthia Dominguez :D", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
@@ -169,7 +198,7 @@ int main()
 	Shader lightingShader("Shader/lighting.vs", "Shader/lighting.frag");
 	Shader lampShader("Shader/lamp.vs", "Shader/lamp.frag");
 	
-	//models
+	//models //Cada una de las partes del perrito 
 	Model DogBody((char*)"Models/DogBody.obj");
 	Model HeadDog((char*)"Models/HeadDog.obj");
 	Model DogTail((char*)"Models/TailDog.obj");
@@ -215,7 +244,7 @@ int main()
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
 		DoMovement();
-		Animation();
+		Animation(); //Función de animación  
 
 		// Clear the colorbuffer
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -305,45 +334,52 @@ int main()
 		model = glm::mat4(1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
-		//Body
-		modelTemp= model = glm::translate(model, dogPos);
-		modelTemp= model = glm::rotate(model, glm::radians(dogRot), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		//Body Cuerpo
+		modelTemp= model = glm::translate(model, dogPos); //le pasamos la posición de la variable de dogPos 
+		modelTemp= model = glm::rotate(model, glm::radians(dogRot), glm::vec3(0.0f, 1.0f, 0.0f)); //le pasamos el parametro de la variable de la rotación 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		DogBody.Draw(lightingShader);
-		//Head
+
+		//Head Cabeza
 		model = modelTemp;
-		model = glm::translate(model, glm::vec3(0.0f, 0.093f, 0.208f));
-		model = glm::rotate(model, glm::radians(head), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.093f, 0.208f)); // se aplican los valores del sistema de referencia que se tiene desde 3DMax 
+		model = glm::rotate(model, glm::radians(head), glm::vec3(0.0f, 0.0f, 1.0f)); // en la rotación se le pasa la variable que va a ayudar a rotar esa sección del cuerpo y en que eje se realiza la rotación
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		HeadDog.Draw(lightingShader);
+
 		//Tail 
 		model = modelTemp;
-		model = glm::translate(model, glm::vec3(0.0f, 0.026f, -0.288f));
-		model = glm::rotate(model, glm::radians(tail), glm::vec3(0.0f, 0.0f, -1.0f)); 
+		model = glm::translate(model, glm::vec3(0.0f, 0.026f, -0.288f)); // se aplican los valores del sistema de referencia que se tiene desde 3DMax 
+		model = glm::rotate(model, glm::radians(tail), glm::vec3(0.0f, 0.0f, -1.0f)); // en la rotación se le pasa la variable que va a ayudar a rotar esa sección del cuerpo y en que eje se realiza la rotación 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); 
 		DogTail.Draw(lightingShader);
+
 		//Front Left Leg
 		model = modelTemp;
-		model = glm::translate(model, glm::vec3(0.112f, -0.044f, 0.074f));
-		model = glm::rotate(model, glm::radians(FLegs), glm::vec3(-1.0f, 0.0f, 0.0f)); 
+		model = glm::translate(model, glm::vec3(0.112f, -0.044f, 0.074f)); // se aplican los valores del sistema de referencia que se tiene desde 3DMax 
+		model = glm::rotate(model, glm::radians(FLegs), glm::vec3(-1.0f, 0.0f, 0.0f)); // en la rotación se le pasa la variable que va a ayudar a rotar esa sección del cuerpo y en que eje se realiza la rotación
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		F_LeftLeg.Draw(lightingShader);
+
 		//Front Right Leg
 		model = modelTemp; 
-		model = glm::translate(model, glm::vec3(-0.111f, -0.055f, 0.074f));
-		model = glm::rotate(model, glm::radians(FLegs), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-0.111f, -0.055f, 0.074f)); // se aplican los valores del sistema de referencia que se tiene desde 3DMax 
+		model = glm::rotate(model, glm::radians(FLegs), glm::vec3(1.0f, 0.0f, 0.0f));// en la rotación se le pasa la variable que va a ayudar a rotar esa sección del cuerpo y en que eje se realiza la rotación
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		F_RightLeg.Draw(lightingShader);
+
 		//Back Left Leg
 		model = modelTemp; 
-		model = glm::translate(model, glm::vec3(0.082f, -0.046, -0.218)); 
-		model = glm::rotate(model, glm::radians(RLegs), glm::vec3(1.0f, 0.0f, 0.0f)); 
+		model = glm::translate(model, glm::vec3(0.082f, -0.046, -0.218)); // se aplican los valores del sistema de referencia que se tiene desde 3DMax 
+		model = glm::rotate(model, glm::radians(RLegs), glm::vec3(1.0f, 0.0f, 0.0f)); // en la rotación se le pasa la variable que va a ayudar a rotar esa sección del cuerpo y en que eje se realiza la rotación
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); 
 		B_LeftLeg.Draw(lightingShader);
+
 		//Back Right Leg
 		model = modelTemp; 
-		model = glm::translate(model, glm::vec3(-0.083f, -0.057f, -0.231f));
-		model = glm::rotate(model, glm::radians(RLegs), glm::vec3(-1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-0.083f, -0.057f, -0.231f)); // se aplican los valores del sistema de referencia que se tiene desde 3DMax 
+		model = glm::rotate(model, glm::radians(RLegs), glm::vec3(-1.0f, 0.0f, 0.0f));// en la rotación se le pasa la variable que va a ayudar a rotar esa sección del cuerpo y en que eje se realiza la rotación
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		B_RightLeg.Draw(lightingShader); 
 
@@ -499,6 +535,11 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		AnimBall = !AnimBall;
 		
 	}
+
+	if (keys[GLFW_KEY_B]) //Tecla con la que se realizara la animación
+	{
+		rotDog -= 0.6f;
+	}
 	
 }
 void Animation() {
@@ -507,13 +548,93 @@ void Animation() {
 		rotBall += 0.4f;
 		//printf("%f", rotBall);
 	}
-	
-	if (AnimDog)
+
+	/*if (AnimDog)
 	{
 		rotDog -= 0.6f;
 		//printf("%f", rotBall);
-	}
+	}*/
+
+	switch (edoActual) {
+	case adelante:
+		// Camina hacia adelante
+		dogPos.z += 0.001;
+		if (dogPos.z >= 2.0f) {
+			edoActual = 1;
+			angRot = 90.0f;
+			caminaDel = true;
+		}
+		break;
+
+	case derecha: // Camina a la derecha
+		dogPos.x += 0.001;
+		if (dogPos.x >= 1.8f) {
+			edoActual = 2;
+			angRot = 180.0f;
+			caminaDer = true;
+		}
+		break;
+
+	case atras:// Camina hacia atrás
+		dogPos.z -= 0.001;
+		if (dogPos.z <= -1.5f) {
+			edoActual = 3;
+			angRot = 315.0f;
+			caminaAtr = true;
+		}
+		break;
+
+	case inicio: // Regresa al inicio
+		dogPos.x -= 0.001;
+		dogPos.z += 0.001;
+		if (dogPos.x <= 0.0f && dogPos.z >= 0.0f) {
+			edoActual = 0;
+			angRot = 360.0f;
+			 inicioEs = true;
+		}
+		break;
+
 	
+		if (!step) { 
+		
+			RLegs += 0.03f;
+			FLegs += 0.03f;
+			head += 0.03f;
+			tail += 0.03f;
+
+			if (RLegs > 15.0f)
+				step = true;
+		}
+		else {
+			RLegs -= 0.03f;
+			FLegs -= 0.03f;
+			head -= 0.03f;
+			tail -= 0.03f;
+
+			if (RLegs < -15.0f)
+				step = false;
+		}
+		if (inicioEs) {
+			dogRot = glm::mix(dogRot, angRot, 0.05f);
+			if (abs(dogRot - angRot) < 0.01f) {
+				dogRot = angRot;
+				inicioEs = false;
+			}
+		}
+
+
+			dogPos.z += 0.001;
+			printf("/n%f", rotDog); // para ver los valores que nos va marcando 
+
+
+			if (dogPos.z >= 2.3f) { 
+				AnimDog = false;  // Detiene la animación del perro
+				printf("Animación del perro detenida en posición Z: %f\n", dogPos.z);
+			}
+
+		}
+
+
 	
 }
 
