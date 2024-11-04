@@ -1,7 +1,7 @@
 /*
 	Práctica 11: Animación por Keyframes
 	Nombre: Cynthia Berenice Domínguez Reyes
-	Fecha de entrega: 
+	Fecha de entrega: 03 de noviembre de 2024
 
 
 */
@@ -168,10 +168,6 @@ typedef struct _frame {
 
 	float RLegs;
 	float RLegsInc;
-
-	//Incrementos en X y Z
-	float incXR;
-	float incZR;
 
 	//Variables para la rotación
 	float rotDogX;
